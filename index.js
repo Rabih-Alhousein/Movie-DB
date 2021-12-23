@@ -1,10 +1,11 @@
 const express = require("express")
 const app = express()
 
-// Home Route
-app.get("/", (req, res) => {
-    res.status(200).send("ok")
-})
+
+    // Home Route
+    app.get("/", (req, res) => {
+        res.status(200).send("ok")
+    })
 
 // Test Route
 
@@ -42,6 +43,15 @@ app.get("/hello/", (req, res) => {
 })
 
 
+
+const movies = [
+    { title: 'Jaws', year: 1975, rating: 8 },
+    { title: 'Avatar', year: 2009, rating: 7.8 },
+    { title: 'Brazil', year: 1985, rating: 8 },
+    { title: 'الالإرهاب و الكباب', year: 1992, rating: 6.2 }
+]
+
+
 // Search Route
 app.get("/search/", (req, res) => {
     if (req.query.s) {
@@ -50,7 +60,7 @@ app.get("/search/", (req, res) => {
             message: 'ok',
             data: req.query.s
         })
-    } else{
+    } else {
         res.send({
             staus: 500,
             error: true,
@@ -60,7 +70,28 @@ app.get("/search/", (req, res) => {
 })
 
 
+// Create Route
+app.get("/movies/add", (req, res) => {
 
+})
+
+// Read Route
+app.get("/movies/get", (req, res) => {
+    res.send({
+        status: 200,
+        data: movies
+    })
+})
+
+// Update Route
+app.get("/movies/edit", (req, res) => {
+
+})
+
+// Delete Route
+app.get("/movies/delete", (req, res) => {
+
+})
 
 
 app.listen(3000)
