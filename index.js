@@ -126,6 +126,31 @@ app.get("/movies/read/by-title", (req, res) => {
 
 })
 
+
+// Read One
+app.get("/movies/read/id/:id", (req, res) => {
+    isNaN
+
+    if (!isNaN(req.params.id) && req.params.id >= 0 && req.params.id < movies.length) {
+        res.send({
+            status: 200,
+            data: movies[req.params.id]
+        })
+    } else {
+        res.status(404)
+        res.send({
+            status: 404,
+            error: true,
+            message: 'the movie ' + req.params.id + ' does not exist'
+        })
+    }
+})
+
+
+
+
+
+
 app.listen(3000)
 
 
