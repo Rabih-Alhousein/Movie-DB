@@ -129,9 +129,8 @@ app.get("/movies/read/by-title", (req, res) => {
 
 // Read One
 app.get("/movies/read/id/:id", (req, res) => {
-    isNaN
-
-    if (!isNaN(req.params.id) && req.params.id >= 0 && req.params.id < movies.length) {
+    /* the id may be a string but cannot be smaller than movies.length it must be a number */
+    if (req.params.id >= '0' && req.params.id < movies.length) {
         res.send({
             status: 200,
             data: movies[req.params.id]
