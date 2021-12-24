@@ -85,10 +85,7 @@ app.get("/movies/edit", (req, res) => {
 
 })
 
-// Delete Route
-app.get("/movies/delete", (req, res) => {
 
-})
 
 
 
@@ -126,8 +123,8 @@ app.get("/movies/read/by-title", (req, res) => {
 
 
 // Read One Route
-app.get("/movies/read/id/:id", (req, res) => {
-    if (req.params.id >= 0  && req.params.id < movies.length) {
+app.get("/movies/read/:id", (req, res) => {
+    if (req.params.id >= 0 && req.params.id < movies.length) {
         res.send({
             status: 200,
             data: movies[req.params.id]
@@ -147,7 +144,7 @@ app.get("/movies/read/id/:id", (req, res) => {
 //http://localhost:3000/movies/add?title=movie&year=1999&rating=9
 app.get("/movies/add", (req, res) => {
     let title = req.query.title
-    let year = req.query.year 
+    let year = req.query.year
     let rating = req.query.rating
     if (title == undefined || year == undefined) {
         res.send({
@@ -174,6 +171,28 @@ app.get("/movies/add", (req, res) => {
         }
     }
 })
+
+
+
+// Delete Route
+app.get("/movies/delete/:id", (req, res) => {
+    if (req.params.id < 0 || (req.params.id > movies.length-1) || isNaN(req.params.id)) {
+        res.send({
+            status: 404,
+            error: true, 
+            message: 'the movie ' + req.params.id + ' does not exist'
+        })
+    } else {
+        movies.splice(req.params.id, 1)
+        res.send({
+            status: 200,
+            data: movies,
+            message: movies.length + " " + req.params.id
+        })
+    }
+})
+
+
 
 
 app.listen(3000)
