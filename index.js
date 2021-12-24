@@ -70,11 +70,7 @@ app.get("/search/", (req, res) => {
 })
 
 
-// Create Route
-app.get("/movies/add", (req, res) => {
 
-
-})
 
 // Read Route
 app.get("/movies/get", (req, res) => {
@@ -104,8 +100,9 @@ app.get("/movies/read/by-date", (req, res) => {
         data: SortedMovies
     })
 
-
 })
+
+
 // Order by Rating
 app.get("/movies/read/by-rating", (req, res) => {
     let SortedMovies = movies.slice().sort(function (a, b) { return b.rating - a.rating })
@@ -114,8 +111,9 @@ app.get("/movies/read/by-rating", (req, res) => {
         data: SortedMovies
     })
 
-
 })
+
+
 // Order by Title
 app.get("/movies/read/by-title", (req, res) => {
     let SortedMovies = movies.slice().sort(function (a, b) { return (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0) })
@@ -127,10 +125,9 @@ app.get("/movies/read/by-title", (req, res) => {
 })
 
 
-// Read One
+// Read One Route
 app.get("/movies/read/id/:id", (req, res) => {
-    /* the id may be a string but cannot be smaller than movies.length it must be a number */
-    if (req.params.id >= '0' && req.params.id < movies.length) {
+    if (req.params.id >= 0  && req.params.id < movies.length) {
         res.send({
             status: 200,
             data: movies[req.params.id]
@@ -145,13 +142,38 @@ app.get("/movies/read/id/:id", (req, res) => {
     }
 })
 
+//  Create Route
 
-
-
+//http://localhost:3000/movies/add?title=movie&year=1999&rating=9
+app.get("/movies/add", (req, res) => {
+    let title = req.query.title
+    let year = req.query.year 
+    let rating = req.query.rating
+    if (title == undefined || year == undefined) {
+        res.send({
+            status: 403,
+            error: true,
+            message: 'you cannot create a movie without providing a title and a year'
+        })
+    } else {
+        if (rating == undefined || isNaN(rating) || rating < 0 || rating > 10) rating = 4
+        if (year.length != 4 || year > '2022' || year < '1900') {
+            res.send({
+                status: 403,
+                error: true,
+                message: 'please enter a valid year'
+            })
+        } else {
+            year = parseInt(year)
+            rating = parseFloat(rating)
+            movies.push({ title, year, rating })
+            res.send({
+                status: 200,
+                data: movies
+            })
+        }
+    }
+})
 
 
 app.listen(3000)
-
-
-
-
