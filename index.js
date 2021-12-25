@@ -1,3 +1,4 @@
+const e = require("express")
 const express = require("express")
 const app = express()
 
@@ -80,13 +81,6 @@ app.get("/movies/get", (req, res) => {
     })
 })
 
-// Update Route
-app.get("/movies/edit", (req, res) => {
-
-})
-
-
-
 
 
 // Order by Date
@@ -154,7 +148,7 @@ app.get("/movies/add", (req, res) => {
         })
     } else {
         if (rating == undefined || isNaN(rating) || rating < 0 || rating > 10) rating = 4
-        if (year.length != 4 || year > '2022' || year < '1900') {
+        if (isNaN(year) || year.length != 4 || year > 2022 || year < 1900) {
             res.send({
                 status: 403,
                 error: true,
@@ -176,23 +170,45 @@ app.get("/movies/add", (req, res) => {
 
 // Delete Route
 app.get("/movies/delete/:id", (req, res) => {
-    if (req.params.id < 0 || (req.params.id > movies.length-1) || isNaN(req.params.id)) {
+    const id = req.params.id
+    if (id < 0 || (id > movies.length - 1) || isNaN(id)) {
         res.send({
             status: 404,
-            error: true, 
-            message: 'the movie ' + req.params.id + ' does not exist'
+            error: true,
+            message: 'the movie ' + id + ' does not exist'
         })
     } else {
-        movies.splice(req.params.id, 1)
+        movies.splice(id, 1)
         res.send({
             status: 200,
             data: movies,
-            message: movies.length + " " + req.params.id
         })
     }
 })
 
+// Update Route
+// http://localhost:3000/movies/edit/2?title=Deadpool&year=2016&rating=8
+app.get("/movies/edit/:id", (req, res) => {
+    const id = req.params.id
+    if (id < 0 || (id > movies.length - 1) || isNaN(id)) {
+        res.send({
+            status: 404,
+            error: true,
+            message: 'the movie ' + id + ' does not exist'
+        })
+    } else {
+        let title = req.query.title
+        let year = req.query.year
+        let rating = req.query.rating
+        if (title != undefined) movies[id].title = title
+        if (year != undefined && !isNaN(year) && year > 1900 && year <= 2022) movies[id].year = year
+        if (rating != undefined && !isNaN(rating) && rating >= 0 && rating <= 10) movies[id].rating = rating
+        res.send({
+            status: 200,
+            data: movies,
+        })
 
-
+    }
+})
 
 app.listen(3000)
