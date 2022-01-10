@@ -1,4 +1,3 @@
-const e = require("express")
 const express = require("express")
 const app = express()
 
@@ -136,7 +135,7 @@ app.get("/movies/read/:id", (req, res) => {
 //  Create Route
 
 //http://localhost:3000/movies/add?title=movie&year=1999&rating=9
-app.get("/movies/add", (req, res) => {
+app.post("/movies/add", (req, res) => {
     let title = req.query.title
     let year = req.query.year
     let rating = req.query.rating
@@ -169,7 +168,7 @@ app.get("/movies/add", (req, res) => {
 
 
 // Delete Route
-app.get("/movies/delete/:id", (req, res) => {
+app.delete("/movies/delete/:id", (req, res) => {
     const id = req.params.id
     if (id < 0 || (id > movies.length - 1) || isNaN(id)) {
         res.send({
@@ -188,7 +187,7 @@ app.get("/movies/delete/:id", (req, res) => {
 
 // Update Route
 // http://localhost:3000/movies/edit/2?title=Deadpool&year=2016&rating=8
-app.get("/movies/edit/:id", (req, res) => {
+app.put("/movies/edit/:id", (req, res) => {
     const id = req.params.id
     if (id < 0 || (id > movies.length - 1) || isNaN(id)) {
         res.send({
