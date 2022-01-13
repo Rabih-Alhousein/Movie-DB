@@ -11,6 +11,149 @@ const movies = [
 ]
 
 
+const users = [{
+    username: 'rabi3',
+    password: '12345678'
+}, {
+    username: 'ahmad',
+    password: '12345678'
+}, {
+    username: 'houssein',
+    password: '12345678'
+}];
+
+
+// ANCHOR Read Users Route
+app.get("/users/get", (req, res) => {
+    res.send({
+        status: 200,
+        data: users
+    })
+})
+// ANCHOR Create User Route
+
+//http://localhost:3000/users/add?username=rabi3&password=1999
+app.post("/users/add", (req, res) => {
+    let username = req.query.username
+    let password = req.query.password
+    if (username == undefined || password == undefined) {
+        res.send({
+            status: 403,
+            error: true,
+            message: 'you cannot create a user without providing a username and a a password'
+        })
+    } else if (users.some((a) => a.username == username)) {
+        res.send({
+            status: 403,
+            error: true,
+            message: 'username already exist, choose another one'
+        })
+    } else if (!(/^[a-z0-9_-]{3,15}$/).test(username)) {
+        res.send({
+            status: 403,
+            error: true,
+            message: ' username should be lowercase, do not start with a number and between 3 and 15 characters '
+        })
+    } else if (!(/^[A-Za-z0-9]\w{8,}$/).test(password)) {
+        res.send({
+            status: 403,
+            error: true,
+            message: ' password should start with letters or numbers only and should be 8 characters or more '
+        })
+    } else {
+        users.push({ username, password })
+        res.send({
+            status: 200,
+            data: users
+        })
+    }
+})
+
+
+// ANCHOR Delete User Route
+//http://localhost:3000/users/delete/1
+
+app.delete("/users/delete/:id", (req, res) => {
+    const id = req.params.id
+    if (id < 0 || (id > users.length - 1) || isNaN(id)) {
+        res.send({
+            status: 404,
+            error: true,
+            message: 'the user ' + id + ' does not exist'
+        })
+    } else {
+        users.splice(id, 1)
+        res.send({
+            status: 200,
+            data: users,
+        })
+    }
+})
+
+// ANCHOR Update User Route
+// http://localhost:3000/users/edit/2?username=rabi3&password=1999
+
+app.put("/users/edit/:id", (req, res) => {
+    const id = req.params.id
+    if (id < 0 || (id > users.length - 1) || isNaN(id)) {
+        res.send({
+            status: 404,
+            error: true,
+            message: 'the user ' + id + ' does not exist'
+        })
+    } else {
+        let username = req.query.username
+        let password = req.query.password
+        if (username != undefined) {
+            if (!(/^[a-z0-9_-]{3,15}$/).test(username)) {
+                res.send({
+                    status: 403,
+                    error: true,
+                    message: ' username should be lowercase, do not start with a number and between 3 and 15 characters '
+                })
+            } else {
+                let exist = false
+                for (let i = 0; i < users.length; i++) {
+                    if (i == id) continue
+                    if (users[i].username == username) {
+                        exist = true
+                        break
+                    }
+                }
+                if (exist == true) {
+                    res.send({
+                        status: 403,
+                        error: true,
+                        message: 'you cannot use this username, it is already in use'
+                    })
+                } else {
+                    if (password != undefined) {
+                        console.log(password)
+                        if (!(/^[A-Za-z0-9]\w{8,}$/).test(password)) {
+                            res.send({
+                                status: 403,
+                                error: true,
+                                message: ' password should start with letters or numbers only and should be 8 characters or more '
+                            })
+                        } else {
+                            users[id].password = password
+                        }
+                    }
+
+                    users[id].username = username
+                    res.send({
+                        status: 200,
+                        data: users,
+                    })
+                }
+            }
+        }
+    }
+
+
+})
+
+
 // ANCHOR MongoDB
 
 var mongoose = require('mongoose')
